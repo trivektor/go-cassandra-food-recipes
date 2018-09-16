@@ -59,3 +59,32 @@ func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
     w.WriteHeader(201)
   }
 }
+
+func Show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+  m := map[string]interface{}{}
+
+  query := cassandra.Session.Query("SELECT * FROM recipes WHERE id = ?", ps.ByName("id"))
+
+  err := query.MapScan(m)
+
+  if err != nil {
+    m := map[string]string{}
+    m["error"] = err.Error()
+    response, _ := json.Marshal(m)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(404)
+    w.Write(response)
+  } else {
+    recipe := models.Recipe{
+      Id: m["id"].(gocql.UUID),
+      Name: m["name"].(string),
+      Description: m["description"].(string),
+      CreatedAt: m["created_at"].(time.Time),
+    }
+
+    response, _ := json.Marshal(recipe)
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(200)
+    w.Write(response)
+  }
+}
