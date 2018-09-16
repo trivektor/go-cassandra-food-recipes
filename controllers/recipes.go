@@ -36,6 +36,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   w.Write(response)
 }
 
+// curl -d "name=lasagna&description=italian pasta" -X POST http://localhost:8080/recipes
 func Create(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
   name := r.FormValue("name")
   description := r.FormValue("description")
@@ -89,6 +90,7 @@ func Show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
   }
 }
 
+// curl -X "DELETE" http://localhost:8080/recipes/6bdec5e0-b989-11e8-a50c-330da1d9fa93
 func Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
   err := cassandra.Session.Query("DELETE FROM recipes WHERE id = ?", ps.ByName("id")).Exec()
 
