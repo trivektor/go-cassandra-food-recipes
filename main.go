@@ -18,5 +18,6 @@ func main() {
 
   router := httprouter.New()
   router.GET("/", controllers.Index)
+  router.POST("/recipes", controllers.Create)
   log.Fatal(http.ListenAndServe(":8080", router))
 }
