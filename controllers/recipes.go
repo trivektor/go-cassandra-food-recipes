@@ -88,3 +88,19 @@ func Show(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
     w.Write(response)
   }
 }
+
+func Delete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+  err := cassandra.Session.Query("DELETE FROM recipes WHERE id = ?", ps.ByName("id")).Exec()
+
+  w.Header().Set("Content-Type", "application/json")
+
+  if err != nil {
+    m := map[string]string{}
+    m["error"] = err.Error()
+    response, _ := json.Marshal(m)
+    w.WriteHeader(400)
+    w.Write(response)
+  } else {
+    w.WriteHeader(200)
+  }
+}

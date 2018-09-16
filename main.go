@@ -20,5 +20,6 @@ func main() {
   router.GET("/", controllers.Index)
   router.POST("/recipes", controllers.Create)
   router.GET("/recipes/:id", controllers.Show)
+  router.DELETE("/recipes/:id", controllers.Delete)
   log.Fatal(http.ListenAndServe(":8080", router))
 }
